@@ -90,7 +90,7 @@ class SQLService:
             return False
         else:
             for row in ret:
-                if(row[9] == 'n'):
+                if(row[9] == 'y'):
                     print("Product is discontinued.  Cannot complete order.")
                     return False
 
@@ -140,6 +140,19 @@ class SQLService:
             self.connection.commit()
 
             print("Order has been shipped.")
+            return True
+        except Exception as ex:
+            print(str(ex))
+            return False
+    
+    def restock_product(self, prod:dict):
+        cursor = self.connection.cursor()
+
+        try:
+            cursor.execute(f"UPDATE products SET UnitsInStock = {prod['qty']} WHERE ProductID = {prod['id']}")
+            self.connection.commit()
+
+            print(f"Product #{prod['id']} has been restocked to {prod['qty']} units.")
             return True
         except Exception as ex:
             print(str(ex))

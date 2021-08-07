@@ -26,6 +26,8 @@ def operate(sql_serv:SQLService):
             "4)Ship an Order\n5)Print Pending Orders\n6)Restock a Product\n"+
             "0)Exit\n"
         )
+        #Python does not have case functionality, so we are left with the old
+        #if conditional statements.
         if(opt == '0'):
             return
 
@@ -63,6 +65,24 @@ def operate(sql_serv:SQLService):
             ):
                 res += (f"{row[0]} - {row[3]}\n")
             print(res)
+        
+        elif(opt == '6'):
+            print('Products Due for Resocking\n-----------------')
+            res = ''
+            rows = sql_serv.select(
+                'Select ProductID,UnitsInStock,UnitsOnOrder,ReorderLevel from products Where Discontinued = \'n\''
+            )
+            for row in rows:
+                units = row[1] + row[2]
+                if(units < row[3]):
+                    res += f"ID: {row[0]} - {units} units | Reorder level: {row[3]}\n"
+            print(res)
+
+            ret = comp.restock_product(rows)
+            if ret == False:
+                continue
+            sql_serv.restock_product(ret)
+
 
 
 if __name__ == "__main__":
