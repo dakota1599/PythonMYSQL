@@ -2,18 +2,19 @@ import sys
 
 #Composer will gather the data needed to be passed into queries.
 class Composer:
-    def __init__(self, data):
+    def __init__(self):
         self.release = False
-        self.database = data
         return
 
     #Gathers customer data
     def add_customer(self):
+        #Customer information dictionary
         cust = {'customer_id':'','company_name ':'','contact_name':'','contact_title':'',
             'address':'','city':'','region':'','postal_code':'','country':'',
             'phone':'','fax':''
         }
         print("Please enter in necessary details")
+        #Iterate through the keys of the customer dictionary to get user input.
         for key in cust.keys():
             cust[key] = input(f"{key.upper()}: ")
             sys.stdout.flush()
@@ -25,6 +26,7 @@ class Composer:
     
     #Gathers order data for the orders and order_details tables.
     def add_order(self):
+        #Order information dictionary
         order = {'customer_id':'','employee_id':'',
             'order_date':'','required_date':'','ship_name':'','ship_address':'',
             'ship_city':'','ship_region':'','ship_postal_code':'',
@@ -32,9 +34,14 @@ class Composer:
             'discount':''
         }
 
+        #Iterates through the keys of the order dictionary to get input data.
         for key in order.keys():
+            if key == 'product_id':
+                order[key] = input(f"{key.upper()} (Put commas between multiple product IDs): ")
+                continue
             order[key] = input(f"{key.upper()}: ")
         
+        #Validation
         if(self.verify(order) == True):
             return order
         else:
@@ -42,6 +49,7 @@ class Composer:
     
     #Gathers the id of the order to be deleted.
     def remove_order(self):
+        #Order ID object
         ord = input("Enter the Order ID of the order you wish to remove: ")
         try:
             int(ord)
@@ -54,6 +62,7 @@ class Composer:
 
     #Gathers data needed to update the order's ship status.
     def ship_order(self):
+        #Order ship information dictionary
         info = {'order_id':'','shipped_date': '', 'ship_via':'','freight':''}
 
         for key in info.keys():
@@ -70,17 +79,20 @@ class Composer:
         prod['id'] = input('ID (or \'n\' to exit): ')
         cQty = -1
         try:
+            #Escape option
             if prod['id'] == 'n':
                 return False
+            #Iterate through the rows of products until match is found
             for row in rows:
                 if row[0] == int(prod['id']):
                     cQty = row[1]
+                    break
         
             if cQty == -1:
                 print("You entered an incorrect ProductID.")
                 return False
 
-        
+            #Calculates new in stock total
             prod['qty'] = int(input('Enter amount you want to add: ')) + cQty
             return prod
         

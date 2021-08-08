@@ -19,7 +19,8 @@ def main():
 #necessary classes and objects.
 def operate(sql_serv:SQLService):
     close = False
-    comp = Composer(sql_serv.conn_info['database'])
+    #The composer object for gathering data
+    comp = Composer()
     while(close == False):
         print('What operation would you like to complete?\n')
         opt = input("1)Add a customer\n2)Add an Order\n3)Remove an Order\n"+
@@ -28,9 +29,11 @@ def operate(sql_serv:SQLService):
         )
         #Python does not have case functionality, so we are left with the old
         #if conditional statements.
+        #Escape option
         if(opt == '0'):
             return
 
+        #Adding a customer option
         elif(opt == '1'):
             ret = comp.add_customer() 
             if ret == False:
@@ -38,6 +41,7 @@ def operate(sql_serv:SQLService):
                 continue
             sql_serv.insert_customer(ret)
         
+        #Adding an order option
         elif(opt == '2'):
             ret = comp.add_order()
             if ret == False:
@@ -45,18 +49,21 @@ def operate(sql_serv:SQLService):
                 continue
             sql_serv.insert_order(ret)
         
+        #Removing an order option
         elif(opt == '3'):
             ret = comp.remove_order()
             if ret == False:
                 continue
             sql_serv.remove_order(ret)
 
+        #Shipping an order option
         elif(opt == '4'):
             ret = comp.ship_order()
             if ret == False:
                 continue
             sql_serv.ship_order(ret)
 
+        #Listing pending orders option
         elif(opt == '5'):
             print('Order ID - Order Date (Oldest - Newest)')
             res = ''
@@ -66,6 +73,7 @@ def operate(sql_serv:SQLService):
                 res += (f"{row[0]} - {row[3]}\n")
             print(res)
         
+        #List products due for restocking option
         elif(opt == '6'):
             print('Products Due for Resocking\n-----------------')
             res = ''
@@ -85,5 +93,6 @@ def operate(sql_serv:SQLService):
 
 
 
+#Kicks off the main function
 if __name__ == "__main__":
     main()
