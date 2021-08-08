@@ -35,7 +35,8 @@ class SQLService:
                     )
                 release = True
             #Failure to do so will prompt a retry or escape
-            except:
+            except Exception as ex:
+                print(str(ex))
                 print('Error, unable to connect to SQL Server.  Please check the accuracy of your Server credentials.')
                 if input('Try again? (y/n)') == 'y':
                     continue
